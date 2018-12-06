@@ -10,7 +10,7 @@ import (
 func TestPublishedTweetIsSaved(t *testing.T) {
 	// Initialization
 	tweetManager.NewTweetManager()
-	var twt *tweetManager.Tweet
+	var twt *tweetManager.TextTweet
 	usr := "ignaciovila"
 	text := "This is my third tweet"
 	twt = tweetManager.NewTweet(usr, text)
@@ -27,17 +27,17 @@ func TestPublishedTweetIsSaved(t *testing.T) {
 	}
 
 	publishedTweet := tweetManager.GetTweets()[0]
-	if publishedTweet.User != usr ||
-		publishedTweet.Text != text {
-		t.Errorf("Expected tweet is %s: %s \nbut is %s: %s", usr, text, publishedTweet.User, publishedTweet.Text)
+	if publishedTweet.GetUser() != usr ||
+		publishedTweet.GetText() != text {
+		t.Errorf("Expected tweet is %s: %s \nbut is %s: %s", usr, text, publishedTweet.GetUser(), publishedTweet.GetText())
 	}
-	if publishedTweet.Date == nil {
+	if publishedTweet.GetDate() == nil {
 		t.Error("Expected date cannot be nil")
 	}
 }
 
 func TestTweetWithoutUserIsNotPublished(t *testing.T) {
-	var twt *tweetManager.Tweet
+	var twt *tweetManager.TextTweet
 	var user string
 	text := "This is my first tweet"
 	twt = tweetManager.NewTweet(user, text)
@@ -51,7 +51,7 @@ func TestTweetWithoutUserIsNotPublished(t *testing.T) {
 }
 
 func TestTweetWithoutTextIsNotPublished(t *testing.T) {
-	var twt *tweetManager.Tweet
+	var twt *tweetManager.TextTweet
 	user := "ignaciovila"
 	var text string
 	twt = tweetManager.NewTweet(user, text)
@@ -65,7 +65,7 @@ func TestTweetWithoutTextIsNotPublished(t *testing.T) {
 }
 
 func TestTweetThatExceedes140CharactersIsNotPublished(t *testing.T) {
-	var twt *tweetManager.Tweet
+	var twt *tweetManager.TextTweet
 	user := "ignaciovila"
 	text := "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 	twt = tweetManager.NewTweet(user, text)
@@ -79,7 +79,7 @@ func TestTweetThatExceedes140CharactersIsNotPublished(t *testing.T) {
 }
 
 func TestTweetWithInvalidUserIsNotPublished(t *testing.T) {
-	var twt *tweetManager.Tweet
+	var twt *tweetManager.TextTweet
 	user := "manolo"
 	text := "This is my first tweet"
 	twt = tweetManager.NewTweet(user, text)
@@ -94,7 +94,7 @@ func TestTweetWithInvalidUserIsNotPublished(t *testing.T) {
 
 func TestCanPublishAndRetrieveMoreThanOneTweet(t *testing.T) {
 	tweetManager.NewTweetManager()
-	var twt, secondTweet *tweetManager.Tweet
+	var twt, secondTweet *tweetManager.TextTweet
 	user := "ignaciovila"
 	text1 := "This is my first tweet"
 	text2 := "This is my second tweet"
@@ -118,7 +118,7 @@ func TestCanPublishAndRetrieveMoreThanOneTweet(t *testing.T) {
 
 func TestCanRetrieveTweetById(t *testing.T) {
 	tweetManager.NewTweetManager()
-	var twt *tweetManager.Tweet
+	var twt *tweetManager.TextTweet
 	var id int
 	user := "ignaciovila"
 	text := "This is my third tweet"
@@ -133,7 +133,7 @@ func TestCanRetrieveTweetById(t *testing.T) {
 func TestCanCountTheTweetsSentByAnUser(t *testing.T) {
 	// Initialization
 	tweetManager.NewTweetManager()
-	var twt, secondTweet, thirdTweet *tweetManager.Tweet
+	var twt, secondTweet, thirdTweet *tweetManager.TextTweet
 	usr := "grupoesfera"
 	anotherUser := "nick"
 
@@ -164,7 +164,7 @@ func TestCanCountTheTweetsSentByAnUser(t *testing.T) {
 func TestCanRetrieveTheTweetsSentByAnUser(t *testing.T) {
 	// Initialization
 	tweetManager.NewTweetManager()
-	var twt, secondTweet, thirdTweet *tweetManager.Tweet
+	var twt, secondTweet, thirdTweet *tweetManager.TextTweet
 	usr := "grupocubo"
 	anotherUser := "nick"
 
@@ -195,19 +195,19 @@ func TestCanRetrieveTheTweetsSentByAnUser(t *testing.T) {
 func TestPrintableTweet(t *testing.T) {
 	twt := tweetManager.NewTweet("nacho", "este tuit se va a ver bonito")
 
-	niceTweet := twt.PrintableTweet()
+	niceTweet := twt.String()
 
 	if niceTweet != "@nacho: este tuit se va a ver bonito" {
 		t.Error("el tuit no se vio bonito")
 	}
 }
 
-func isValidTweet(t *testing.T, twt *tweetManager.Tweet, user string, text string) {
-	if twt.User != user {
+func isValidTweet(t *testing.T, twt tweetManager.Tweet, user string, text string) {
+	if twt.GetUser() != user {
 		t.Error("invalid user")
 	}
 
-	if twt.Text != text {
+	if twt.GetText() != text {
 		t.Error("invalid text")
 	}
 }
