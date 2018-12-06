@@ -192,6 +192,16 @@ func TestCanRetrieveTheTweetsSentByAnUser(t *testing.T) {
 	}
 }
 
+func TestPrintableTweet(t *testing.T) {
+	twt := tweetManager.NewTweet("nacho", "este tuit se va a ver bonito")
+
+	niceTweet := twt.PrintableTweet()
+
+	if niceTweet != "@nacho: este tuit se va a ver bonito" {
+		t.Error("el tuit no se vio bonito")
+	}
+}
+
 func isValidTweet(t *testing.T, twt *tweetManager.Tweet, user string, text string) {
 	if twt.User != user {
 		t.Error("invalid user")
