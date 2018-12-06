@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/abiosoft/ishell"
-	"github.com/ignaciovila/tuiter/src/service"
+	service "github.com/ignaciovila/tuiter/src/tweet"
 )
 
 func main() {
@@ -37,9 +37,9 @@ func main() {
 
 			defer c.ShowPrompt(true)
 
-			tweet := service.GetTweet()
+			tweets := service.GetTweets()
 
-			c.Println(tweet)
+			c.Println(tweets)
 
 			return
 		},

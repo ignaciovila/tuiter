@@ -1,11 +1,23 @@
-package user
+package userManager
 
-var userList []*User
+var users []*User
 
 func AddUser(user *User) {
-	userList = append(userList, user)
+	users = append(users, user)
 }
 
 func GetUsers() []*User {
-	return userList
+	return users
+}
+
+func ExistsUser(user string) bool {
+	exists := false
+
+	for i := 0;  i < len(users); i++ {
+		if users[i].Nick == user {
+			exists = true
+		}
+	}
+
+	return exists
 }

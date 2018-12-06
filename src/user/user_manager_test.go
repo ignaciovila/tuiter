@@ -1,4 +1,4 @@
-package user_test
+package userManager_test
 
 import (
 	"testing"
@@ -7,13 +7,13 @@ import (
 )
 
 func TestAddUserToRegistry(t *testing.T) {
-	user.AddUser(user.NewUser("nacho vila", "nacho@ml.com", "nacho", "pass"))
+	userManager.AddUser(userManager.NewUser("nacho vila", "nacho@ml.com", "nacho", "pass"))
 
-	if len(user.GetUsers()) != 1 {
+	if len(userManager.GetUsers()) != 1 {
 		t.Error("El usuario no se ha agregado correctamente")
 	}
 
-	if user.GetUsers()[0].Nombre != "nacho vila" {
-		t.Error("EL nombre del usuario es incorrecto")
+	if userManager.GetUsers()[0].Name != "nacho vila" {
+		t.Error("El nombre del usuario es incorrecto")
 	}
 }

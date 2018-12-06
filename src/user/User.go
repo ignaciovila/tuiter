@@ -1,12 +1,12 @@
-package user
+package userManager
 
 type User struct {
-	Nombre   string
+	Name     string
 	Mail     string
 	Nick     string
 	Password string
 }
 
-func NewUser(nombre string, mail string, nick string, password string) *User {
-	return &User{nombre, mail, nick, password}
+func NewUser(name string, mail string, nick string, password string) *User {
+	return &User{name, mail, nick, password}
 }
