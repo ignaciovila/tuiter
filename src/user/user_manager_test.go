@@ -17,3 +17,9 @@ func TestAddUserToRegistry(t *testing.T) {
 		t.Error("El nombre del usuario es incorrecto")
 	}
 }
+
+func TestExistsUser(t *testing.T) {
+	if !userManager.ExistsUser("nacho") {
+		t.Error("El usuario no existe")
+	}
+}
