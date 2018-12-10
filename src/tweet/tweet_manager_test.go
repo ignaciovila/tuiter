@@ -9,24 +9,26 @@ import (
 
 func TestPublishedTweetIsSaved(t *testing.T) {
 	// Initialization
-	tweetManager.NewTweetManager()
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
 	var twt *tweetManager.TextTweet
 	usr := "ignaciovila"
 	text := "This is my third tweet"
-	twt = tweetManager.NewTweet(usr, text)
+	twt = tweetManager.NewTextTweet(usr, text)
 
 	usr1 := userManager.NewUser("name", "mail", "ignaciovila", "password")
 	userManager.AddUser(usr1)
 
 	// Operation
-	_, err := tweetManager.PublishTweet(twt)
+	_, err := manager.PublishTweet(twt)
 
 	// Validation
 	if err!= nil && err.Error() == "user is required" {
 		t.Error("user is required")
 	}
 
-	publishedTweet := tweetManager.GetTweets()[0]
+	publishedTweet := manager.GetTweets()[0]
+
 	if publishedTweet.GetUser() != usr ||
 		publishedTweet.GetText() != text {
 		t.Errorf("Expected tweet is %s: %s \nbut is %s: %s", usr, text, publishedTweet.GetUser(), publishedTweet.GetText())
@@ -40,10 +42,12 @@ func TestTweetWithoutUserIsNotPublished(t *testing.T) {
 	var twt *tweetManager.TextTweet
 	var user string
 	text := "This is my first tweet"
-	twt = tweetManager.NewTweet(user, text)
+	twt = tweetManager.NewTextTweet(user, text)
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
 
 	var err error
-	_, err = tweetManager.PublishTweet(twt)
+	_, err = manager.PublishTweet(twt)
 
 	if err == nil || err.Error() != "user is required" {
 		t.Error("Expected error is: user is required")
@@ -54,10 +58,12 @@ func TestTweetWithoutTextIsNotPublished(t *testing.T) {
 	var twt *tweetManager.TextTweet
 	user := "ignaciovila"
 	var text string
-	twt = tweetManager.NewTweet(user, text)
+	twt = tweetManager.NewTextTweet(user, text)
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
 
 	var err error
-	_, err = tweetManager.PublishTweet(twt)
+	_, err = manager.PublishTweet(twt)
 
 	if err == nil || err.Error() != "text is required" {
 		t.Error("Expected error is: text is required")
@@ -68,10 +74,12 @@ func TestTweetThatExceedes140CharactersIsNotPublished(t *testing.T) {
 	var twt *tweetManager.TextTweet
 	user := "ignaciovila"
 	text := "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-	twt = tweetManager.NewTweet(user, text)
+	twt = tweetManager.NewTextTweet(user, text)
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
 
 	var err error
-	_, err = tweetManager.PublishTweet(twt)
+	_, err = manager.PublishTweet(twt)
 
 	if err == nil || err.Error() != "max length is 140" {
 		t.Error("Expected error is: max length is 140")
@@ -82,10 +90,12 @@ func TestTweetWithInvalidUserIsNotPublished(t *testing.T) {
 	var twt *tweetManager.TextTweet
 	user := "manolo"
 	text := "This is my first tweet"
-	twt = tweetManager.NewTweet(user, text)
+	twt = tweetManager.NewTextTweet(user, text)
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
 
 	var err error
-	_, err = tweetManager.PublishTweet(twt)
+	_, err = manager.PublishTweet(twt)
 
 	if err == nil || err.Error() != "invalid user" {
 		t.Error("Expected error is: invalid user")
@@ -93,18 +103,19 @@ func TestTweetWithInvalidUserIsNotPublished(t *testing.T) {
 }
 
 func TestCanPublishAndRetrieveMoreThanOneTweet(t *testing.T) {
-	tweetManager.NewTweetManager()
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
 	var twt, secondTweet *tweetManager.TextTweet
 	user := "ignaciovila"
 	text1 := "This is my first tweet"
 	text2 := "This is my second tweet"
-	twt = tweetManager.NewTweet(user, text1)
-	secondTweet = tweetManager.NewTweet(user, text2)
+	twt = tweetManager.NewTextTweet(user, text1)
+	secondTweet = tweetManager.NewTextTweet(user, text2)
 
-	tweetManager.PublishTweet(twt)
-	tweetManager.PublishTweet(secondTweet)
+	manager.PublishTweet(twt)
+	manager.PublishTweet(secondTweet)
 
-	publishedTweets := tweetManager.GetTweets()
+	publishedTweets := manager.GetTweets()
 	if len(publishedTweets) != 2 {
 		t.Error("Unexpected size of tweet list")
 	}
@@ -117,22 +128,24 @@ func TestCanPublishAndRetrieveMoreThanOneTweet(t *testing.T) {
 }
 
 func TestCanRetrieveTweetById(t *testing.T) {
-	tweetManager.NewTweetManager()
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
 	var twt *tweetManager.TextTweet
 	var id int
 	user := "ignaciovila"
 	text := "This is my third tweet"
-	twt = tweetManager.NewTweet(user, text)
+	twt = tweetManager.NewTextTweet(user, text)
 
-	id, _ = tweetManager.PublishTweet(twt)
+	id, _ = manager.PublishTweet(twt)
 
-	publishedTweet := tweetManager.GetTweetById(id)
+	publishedTweet := manager.GetTweetById(id)
 	isValidTweet(t, publishedTweet, user, text)
 }
 
 func TestCanCountTheTweetsSentByAnUser(t *testing.T) {
 	// Initialization
-	tweetManager.NewTweetManager()
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
 	var twt, secondTweet, thirdTweet *tweetManager.TextTweet
 	usr := "grupoesfera"
 	anotherUser := "nick"
@@ -145,15 +158,15 @@ func TestCanCountTheTweetsSentByAnUser(t *testing.T) {
 
 	text := "This is my first tweet"
 	secondText := "This is my second tweet"
-	twt = tweetManager.NewTweet(usr, text)
-	secondTweet = tweetManager.NewTweet(usr, secondText)
-	thirdTweet = tweetManager.NewTweet(anotherUser, text)
-	tweetManager.PublishTweet(twt)
-	tweetManager.PublishTweet(secondTweet)
-	tweetManager.PublishTweet(thirdTweet)
+	twt = tweetManager.NewTextTweet(usr, text)
+	secondTweet = tweetManager.NewTextTweet(usr, secondText)
+	thirdTweet = tweetManager.NewTextTweet(anotherUser, text)
+	manager.PublishTweet(twt)
+	manager.PublishTweet(secondTweet)
+	manager.PublishTweet(thirdTweet)
 
 	// Operation
-	count := tweetManager.CountTweetsByUser(usr)
+	count := manager.CountTweetsByUser(usr)
 
 	// Validation
 	if count != 2 {
@@ -163,7 +176,8 @@ func TestCanCountTheTweetsSentByAnUser(t *testing.T) {
 
 func TestCanRetrieveTheTweetsSentByAnUser(t *testing.T) {
 	// Initialization
-	tweetManager.NewTweetManager()
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
 	var twt, secondTweet, thirdTweet *tweetManager.TextTweet
 	usr := "grupocubo"
 	anotherUser := "nick"
@@ -176,15 +190,15 @@ func TestCanRetrieveTheTweetsSentByAnUser(t *testing.T) {
 
 	text := "This is my first tweet"
 	secondText := "This is my second tweet"
-	twt = tweetManager.NewTweet(usr, text)
-	secondTweet = tweetManager.NewTweet(usr, secondText)
-	thirdTweet = tweetManager.NewTweet(anotherUser, text)
-	tweetManager.PublishTweet(twt)
-	tweetManager.PublishTweet(secondTweet)
-	tweetManager.PublishTweet(thirdTweet)
+	twt = tweetManager.NewTextTweet(usr, text)
+	secondTweet = tweetManager.NewTextTweet(usr, secondText)
+	thirdTweet = tweetManager.NewTextTweet(anotherUser, text)
+	manager.PublishTweet(twt)
+	manager.PublishTweet(secondTweet)
+	manager.PublishTweet(thirdTweet)
 
 	// Operation
-	tweets := tweetManager.GetTweetByUser(usr)
+	tweets := manager.GetTweetByUser(usr)
 
 	// Validation
 	if len(tweets) !=2 {
@@ -193,7 +207,7 @@ func TestCanRetrieveTheTweetsSentByAnUser(t *testing.T) {
 }
 
 func TestPrintableTweet(t *testing.T) {
-	twt := tweetManager.NewTweet("nacho", "este tuit se va a ver bonito")
+	twt := tweetManager.NewTextTweet("nacho", "este tuit se va a ver bonito")
 
 	niceTweet := twt.String()
 
@@ -202,12 +216,67 @@ func TestPrintableTweet(t *testing.T) {
 	}
 }
 
+func TestImageTweet(t *testing.T) {
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
+
+	var twt *tweetManager.ImageTweet
+	var id int
+	userText := "ignaciovila"
+	text := "soy un tuit con imagen!"
+
+	user := userManager.NewUser("name", "mail", "ignaciovila", "password")
+	userManager.AddUser(user)
+
+	twt = tweetManager.NewImageTweet(userText, text, "http://myserver.com/randomImage")
+
+	id, _ = manager.PublishTweet(twt)
+
+	publishedTweet := manager.GetTweetById(id)
+	isValidTweet(t, publishedTweet, userText, text)
+	imageTweet, _ := publishedTweet.(*tweetManager.ImageTweet)
+	if imageTweet.Url != twt.Url {
+		t.Error("invalid url")
+	}
+}
+
+func TestQuoteTweet(t *testing.T) {
+	writer := tweetManager.NewMemoryTweetWriter()
+	manager := tweetManager.NewTweetManager(writer)
+
+	var qTwt *tweetManager.QuoteTweet
+	var twt *tweetManager.TextTweet
+	var id int
+	userText := "ignaciovila"
+	text := "soy un tuit embarazado!"
+
+	user := userManager.NewUser("name", "mail", "ignaciovila", "password")
+	userManager.AddUser(user)
+
+
+	twt = tweetManager.NewTextTweet("juan carlos", "me estan citando!")
+	qTwt = tweetManager.NewQuoteTweet(userText, text, twt)
+
+	id, _ = manager.PublishTweet(qTwt)
+
+	publishedTweet := manager.GetTweetById(id)
+	isValidTweet(t, publishedTweet, userText, text)
+	quoteTweet, _ := publishedTweet.(*tweetManager.QuoteTweet)
+	if quoteTweet.QuotedTweet.GetText() != twt.Text {
+		t.Error("invalid quote")
+	}
+}
+
+func TestTweetWriter(t *testing.T) {
+
+}
+
 func isValidTweet(t *testing.T, twt tweetManager.Tweet, user string, text string) {
 	if twt.GetUser() != user {
-		t.Error("invalid user")
+		t.Error("invalid user: " + twt.GetUser())
 	}
 
 	if twt.GetText() != text {
-		t.Error("invalid text")
+		t.Error("invalid text: " + twt.GetText())
 	}
 }

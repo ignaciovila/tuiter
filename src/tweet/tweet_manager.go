@@ -5,10 +5,13 @@ import (
 	"github.com/ignaciovila/tuiter/src/user"
 	)
 
-var tweets []Tweet
-var tweetsByUser map[string] []Tweet
+type TweetManager struct {
+	tweetsByUser map[string] []Tweet
+	tweetWriter TweetWriter
+}
 
-func PublishTweet(t Tweet) (int, error) {
+func (manager *TweetManager) PublishTweet(t Tweet) (int, error) {
+
 	if len(t.GetUser()) < 1 {
 		return -1, fmt.Errorf("user is required")
 	}
@@ -25,20 +28,22 @@ func PublishTweet(t Tweet) (int, error) {
 		return -1, fmt.Errorf("invalid user")
 	}
 
-	tweets = append(tweets, t)
+	manager.tweetWriter.WriteTweet(t)
 
-	currentList := tweetsByUser[t.GetUser()]
-	tweetsByUser[t.GetUser()] = append(currentList, t)
+	currentList := manager.tweetsByUser[t.GetUser()]
+	manager.tweetsByUser[t.GetUser()] = append(currentList, t)
 
-	return len(tweets) -1, nil
+
+	return len(manager.tweetWriter.getTweets()) -1, nil
 }
 
-func GetTweetById(index int) Tweet {
-	return tweets[index]
+func (manager *TweetManager) GetTweetById(index int) Tweet {
+	return manager.tweetWriter.getTweets()[index]
 }
 
-func CountTweetsByUser(usr string) int {
+func (manager *TweetManager) CountTweetsByUser(usr string) int {
 	count := 0
+	tweets := manager.tweetWriter.getTweets()
 
 	for i := 0; i < len(tweets); i++ {
 		if tweets[i].GetUser() == usr {
@@ -49,15 +54,14 @@ func CountTweetsByUser(usr string) int {
 	return count
 }
 
-func GetTweetByUser(usr string) []Tweet {
-	return tweetsByUser[usr]
+func (manager *TweetManager) GetTweetByUser(usr string) []Tweet {
+	return manager.tweetsByUser[usr]
 }
 
-func GetTweets() []Tweet {
-	return tweets
+func (manager *TweetManager) GetTweets() []Tweet {
+	return manager.tweetWriter.getTweets()
 }
 
-func NewTweetManager() {
-	tweets = make([]Tweet, 0)
-	tweetsByUser = make(map[string] []Tweet)
+func NewTweetManager(writer TweetWriter)  *TweetManager {
+	return &TweetManager{make(map[string] []Tweet), writer }
 }

@@ -10,23 +10,23 @@ type TextTweet struct {
 	Date *time.Time
 }
 
-func NewTweet(user string, text string) *TextTweet {
+func NewTextTweet(user string, text string) *TextTweet {
 	now := time.Now()
 	return &TextTweet{user, text, &now}
 }
 
-func (tweet TextTweet) String() string {
+func (tweet *TextTweet) String() string {
 	return "@" + tweet.User + ": " + tweet.Text
 }
 
-func (tweet TextTweet) GetUser() string {
+func (tweet *TextTweet) GetUser() string {
 	return tweet.User
 }
 
-func (tweet TextTweet) GetText() string {
+func (tweet *TextTweet) GetText() string {
 	return tweet.Text
 }
 
-func (tweet TextTweet) GetDate() *time.Time {
+func (tweet *TextTweet) GetDate() *time.Time {
 	return tweet.Date
 }
