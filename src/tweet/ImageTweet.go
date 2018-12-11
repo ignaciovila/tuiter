@@ -1,4 +1,4 @@
-package tweetManager
+package tweet
 
 import "time"
 
@@ -8,7 +8,7 @@ type ImageTweet struct {
 }
 
 func (tweet *ImageTweet) String() string {
-	return "@" + tweet.User + ": " + tweet.Text + "\n" +
+	return "@" + tweet.GetUser() + ": " + tweet.GetText() + " - " +
 		"URL: " + tweet.Url
 }
 

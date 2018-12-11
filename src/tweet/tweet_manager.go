@@ -1,4 +1,4 @@
-package tweetManager
+package tweet
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ func (manager *TweetManager) PublishTweet(t Tweet) (int, error) {
 		return -1, fmt.Errorf("max length is 140")
 	}
 
-	if !userManager.ExistsUser(t.GetUser()) {
+	if !user.ExistsUser(t.GetUser()) {
 		return -1, fmt.Errorf("invalid user")
 	}
 

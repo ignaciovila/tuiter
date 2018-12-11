@@ -1,13 +1,13 @@
-package tweetManager
+package tweet
 
 import (
 	"time"
 )
 
 type TextTweet struct {
-	User string
-	Text string
-	Date *time.Time
+	user string
+	text string
+	date *time.Time
 }
 
 func NewTextTweet(user string, text string) *TextTweet {
@@ -16,17 +16,17 @@ func NewTextTweet(user string, text string) *TextTweet {
 }
 
 func (tweet *TextTweet) String() string {
-	return "@" + tweet.User + ": " + tweet.Text
+	return "@" + tweet.user + ": " + tweet.text
 }
 
 func (tweet *TextTweet) GetUser() string {
-	return tweet.User
+	return tweet.user
 }
 
 func (tweet *TextTweet) GetText() string {
-	return tweet.Text
+	return tweet.text
 }
 
 func (tweet *TextTweet) GetDate() *time.Time {
-	return tweet.Date
+	return tweet.date
 }

@@ -1,4 +1,4 @@
-package tweetManager
+package tweet
 
 type MemoryTweetWriter struct {
 	tweets []Tweet

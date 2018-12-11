@@ -1,7 +1,6 @@
-package tweetManager
+package tweet
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -9,8 +8,8 @@ type FileTweetWriter struct {
 	file *os.File
 }
 
-func (writer *FileTweetWriter) WriteTweet(tweet Tweet, c chan int) {
-	fmt.Fprintf(writer.file, tweet.String())
+func (writer *FileTweetWriter) WriteTweet(tweet Tweet) {
+	writer.file.WriteString(tweet.String())
 }
 
 func (writer *FileTweetWriter) getTweets() []Tweet{

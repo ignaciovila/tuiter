@@ -1,4 +1,4 @@
-package tweetManager
+package tweet
 
 import "time"
 

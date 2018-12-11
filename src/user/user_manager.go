@@ -1,4 +1,4 @@
-package userManager
+package user
 
 var users []*User
 

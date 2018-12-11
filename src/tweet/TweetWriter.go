@@ -1,4 +1,4 @@
-package tweetManager
+package tweet
 
 type TweetWriter interface {
 	WriteTweet(tweet Tweet)

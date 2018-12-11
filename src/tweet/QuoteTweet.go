@@ -1,4 +1,4 @@
-package tweetManager
+package tweet
 
 import "time"
 
@@ -8,7 +8,7 @@ type QuoteTweet struct {
 }
 
 func (tweet *QuoteTweet) String() string {
-	return "@" + tweet.User + ": " + tweet.Text + "\n" +
+	return "@" + tweet.GetUser() + ": " + tweet.GetText() + " - " +
 		"Quote: " + "@" + tweet.QuotedTweet.GetUser() + ": " + tweet.QuotedTweet.GetText()
 }
 
